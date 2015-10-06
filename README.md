@@ -1,6 +1,5 @@
 # Design patterns for javaScript
-Simple example of patterns for js.
-Already in list
+## In list:
  - Singleton
  - Decorator
  - Factory
