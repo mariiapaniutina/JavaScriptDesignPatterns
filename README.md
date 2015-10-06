@@ -1,5 +1,5 @@
 # Design patterns for javaScript
-## In list:
+In list:
  - Singleton
  - Decorator
  - Factory
