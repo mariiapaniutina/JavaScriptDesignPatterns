@@ -5,3 +5,7 @@
 | Singleton |
 | Decorator |
 | Factory |
+
+| Inside folder "bestPractices" |
+-----------
+| PerformanceTimer |
