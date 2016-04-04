@@ -32,6 +32,21 @@ LinkedList.prototype.pop = function(){
     newHead = newHead.next;
   }
   newHead.next = null;
+  this.size--;
+};
+
+LinkedList.prototype.indexOf = function(val){
+  var newHead = this.head;
+  if (this.head == null){
+    return -1;
+  }
+  for (var i=0; i<this.size; i++){
+    if(newHead.val == val){
+      return i;
+    }
+    newHead = newHead.next;
+  }
+  return -1;
 };
 
 LinkedList.prototype.getSize = function(){
