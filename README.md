@@ -4,5 +4,13 @@
 -----------
 | Singleton |
 | Decorator |
-| Factory |
+| Abstract Factory |
+| Factory Method |
+| Observer |
 
+| Inside folder "dataStructure" |
+-----------
+| Linked List |
+| Queue |
+| Stack |
+| Priority Queue |
