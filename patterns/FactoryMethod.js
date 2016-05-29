@@ -1,5 +1,5 @@
 //Pattern Factory
-//Real example of Factory = new Object(); because if argument is number it creates Number(), if string - creates String()
+//Real example of Factory Method = new Object(); because if argument is number it creates Number(), if string - creates String()
 function Element(){
   
   var el;
