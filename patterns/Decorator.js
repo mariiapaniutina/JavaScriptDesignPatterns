@@ -1,4 +1,9 @@
 /*
+Decorator takes a function(s) as argument and returns an function, 
+which extends behavior or add new functionality to input function.
+*/
+
+/*
 Example of Decorator is caching.
 */
 var memoDecorator = function(fn){
