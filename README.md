@@ -7,6 +7,8 @@
 | Abstract Factory |
 | Factory Method |
 | Observer |
+| Command |
+| Mixins |
 
 | Inside folder "dataStructure" |
 -----------
