@@ -56,26 +56,26 @@ helper.debouncer = function(fn, timer){
   var stack = [];
   var fnCalled = false;
   
-	return function(){
-		var args = arguments;
-    var context = this;
-    var currTime = new Date().getTime();
-    stack.push(args);
+    return function(){
+      var args = arguments;
+      var context = this;
+      var currTime = new Date().getTime();
+      stack.push(args);
     
-    if ((currTime - time >= timer)){
-      time = currTime;
-      fnCalled = true;
-      return fn.apply(context, args);
-    }
+	    if ((currTime - time >= timer)){
+	      time = currTime;
+	      fnCalled = true;
+	      return fn.apply(context, args);
+	    }
     
-    setTimeout(function(){
-      if (fnCalled === false){
-        fnCalled = true;
-        return fn.apply(context, stack[stack.length-1]);
-      }
-    }, timer);
-    
-	};
+	    setTimeout(function(){
+	      if (fnCalled === false){
+	        fnCalled = true;
+	        return fn.apply(context, stack[stack.length-1]);
+	      }
+	    }, timer);
+
+		};
 };
 
 var testIt = helper.debouncer(sayLetter, 100);
