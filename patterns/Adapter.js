@@ -1,6 +1,7 @@
 /*
 Adapter pattern allows the interface of an existing class to be used from another class.
-Example below.
+Adapter is usefull in case if system supports the required data inputs and methods, but has different interfaces.
+So, Adapter its a wrapper with "correct, right" interface.
 */
 
 //Old code was provided by third party
