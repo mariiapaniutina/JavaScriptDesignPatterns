@@ -43,7 +43,7 @@ MaxHeap.prototype.extractRoot = function(){
     var leftCurrChild = this.getLeftChildPos(1);
     var rightCurrChild = this.getRightChildPos(1);
 
-    //while root is smaller that its left or right child, bubble down and swap with smallest child
+    //while root is smaller that its left or right child, bubble down and swap with biggest child
     while ((this.heap[currPos] && leftCurrChild !== null && this.heap[currPos] < this.heap[leftCurrChild]) ||
            (this.heap[currPos] && rightCurrChild !== null && this.heap[currPos] < this.heap[rightCurrChild])){
       //looking for its min child
