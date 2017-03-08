@@ -29,15 +29,15 @@ MaxHeap.prototype.getRoot = function(){
 MaxHeap.prototype.extractRoot = function(){
   //root always going to be on position 1.
   if (this.heap[1]){
-    //removing and saving element from position 1
-    var root = this.heap.splice(1, 1);
+    //saving element from position 1
+    var root = this.heap[1];
 
     //now its time to update heap
     //take the latest element from heap
     var el = this.heap.pop();
 
     //put that to root
-    this.heap.splice(1, 0, el);
+    this.heap.splice(1, 1, el);
 
     var currPos = 1;
     var leftCurrChild = this.getLeftChildPos(1);
@@ -96,8 +96,10 @@ MaxHeap.prototype.getHeap = function(){
   return this.heap;
 };
 
+module.exports = MaxHeap;
+
 //testing
-var maxHeap = new MaxHeap();
+var maxHeap = new MinHeap();
 maxHeap.insert(10);
 maxHeap.insert(5);
 maxHeap.insert(20);
@@ -109,8 +111,8 @@ maxHeap.insert(30);
 
 console.log('heap is', maxHeap.getHeap()); // [ null, 50, 30, 20, 15, 5, 10, 19, 2 ]
 
-maxHeap.extractRoot();
+maxHeap.extractRoot(); //50
 console.log('heap is', maxHeap.getHeap()); // [ null, 30, 15, 20, 2, 5, 10, 19 ]
 
-maxHeap.extractRoot();
+maxHeap.extractRoot(); //30
 console.log('heap is', maxHeap.getHeap()); // [ null, 20, 15, 19, 2, 5, 10 ]
