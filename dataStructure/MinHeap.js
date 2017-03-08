@@ -29,15 +29,15 @@ MinHeap.prototype.getRoot = function(){
 MinHeap.prototype.extractRoot = function(){
   //root always going to be on position 1.
   if (this.heap[1]){
-    //removing and saving element from position 1
-    var root = this.heap.splice(1, 1);
+    //saving element from position 1
+    var root = this.heap[1];
 
     //now its time to update heap
     //take the latest element from heap
     var el = this.heap.pop();
 
-    //put that to root
-    this.heap.splice(1, 0, el);
+    //put that to root with removing prev root
+    this.heap.splice(1, 1, el);
 
     var currPos = 1;
     var leftCurrChild = this.getLeftChildPos(1);
@@ -98,7 +98,7 @@ MinHeap.prototype.getHeap = function(){
 
 module.exports = MinHeap;
 
-//testing
+// testing
 var minHeap = new MinHeap();
 minHeap.insert(10);
 minHeap.insert(5);
@@ -111,8 +111,8 @@ minHeap.insert(30);
 
 console.log('heap is', minHeap.getHeap()); // [ null, 2, 5, 19, 10, 15, 20, 50, 30 ]
 
-minHeap.extractRoot();
+minHeap.extractRoot(); //2
 console.log('heap is', minHeap.getHeap()); // [ null, 5, 10, 19, 30, 15, 20, 50 ]
 
-minHeap.extractRoot();
+minHeap.extractRoot(); //5
 console.log('heap is', minHeap.getHeap()); // [ null, 10, 15, 19, 30, 50, 20 ]
