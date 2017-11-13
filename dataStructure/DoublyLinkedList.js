@@ -63,15 +63,17 @@ DLinkedList.prototype.removeNode = function(node){
   var prev = node.prev;
   var next = node.next;
   
-  //if this is tail
-  if (node.next === null){
+  //if this is only one element in list
+  if (node.next === null && node.prev === null){
+    this.head = null;
+    this.tail = null;
+  } else if (node.next === null){ // this is tail
     this.tail = prev;
     this.tail.next = null;
-  // if this is head
-  } else if (node.prev === null){
+  } else if (node.prev === null){ // this is head
     this.head = next;
     this.head.prev = null;
-  } else {
+  } else { //element in the middle
     prev.next = next;
   }
   
