@@ -2,110 +2,173 @@
  * @param {number} capacity
  */
 var LRUCache = function(capacity) {
-    this.capacity = capacity;
-    
-    //map for storing key and referance to list
-    this.map = {};
-    
-    //conctructor for Doubly Linked List
-    DLinkedList = function(){
-        this.Node = function(key, val){
-            this.val = val;
-          this.key = key;
-            this.next = null;
-            this.prev = null;
-        };
-  
-        this.size = 0;
-        this.head = null;
-        this.tail = null;
+  this.cacheCapacity = capacity;
+
+  //constructor for Doubly Linked list
+  //with minimum required methods
+  var DDList = function() {
+
+    //constructor for list node
+    this.Node = function(key, val) {
+      this.key = key;
+      this.val = val;
+      this.prev = null;
+      this.next = null;
     };
 
-    DLinkedList.prototype.addFront = function(key, val){
-        var node = new this.Node(key, val);
-        //console.log('==addFront :: val', val);
-        //console.log('==addFront :: this.size', this.size);
+    //first element of list
+    this.listHead = null;
 
-        if (this.size === 0){
-            this.head = node;
-            this.tail = node;
-        } else {
-            node.next = this.head;
-            this.head.prev = node;
-            this.head = node;
-        }
-        
-        this.size++;
-        return node;
-    };
+    //last element of list
+    this.listTail = null;
 
-    DLinkedList.prototype.addTail = function(key, val){
-        var node = new this.Node(key, val);
-  
-        if (this.size === 0){
-            this.head = node;
-            this.tail = node;
-        } else {
-            this.tail.next = node;
-            node.prev = this.tail;
-            this.tail = node;
-        }
-  
-        this.size++;
-        return node;
-    };
-  
-    DLinkedList.prototype.getTail = function(){
-        return this.tail;
-    };
+    //size of linked list
+    this.listSize = 0;
 
-    DLinkedList.prototype.removeNode = function(node){
-        var prev = node.prev;
-        var next = node.next;
-  
-        //if this is tail
-        if (node.next === null){
-          //console.log('==remove tail');
-          this.tail = node.prev;
-          this.tail.next = null;  
-        // if this is head
-        } else if (node.prev === null){
-            //console.log('==remove head');
-            this.head = next;
-            this.head.prev = null;
-        } else {
-          //console.log('==remove in middle');
-            prev.next = next;
-        }
-  
-        if (this.size > 0){
-            this.size--;
-        }
-    };
-    
-    DLinkedList.prototype.getSize = function(){
-        return this.size;
-    };
-  
-  DLinkedList.prototype.getStringifiedData = function(){
-  var str = 'HEAD-';
-  var curr = this.head;
-  while (curr !== null){
-    if (curr.next !== null){
-      str += '-> ' + curr.val + ' <-';
-    } else {
-      str += '-> ' + curr.val;
+    //map which provides immidiate access to elements in list (via key)
+    this.listKeyMap = {};
+  };
+
+  //pushing new nodes in front of list
+  DDList.prototype.pushFront = function(key, val) {
+    var nodeToAdd = new this.Node(key, val);
+
+    //if key is already presenting in map and in list => error
+    if (this.listKeyMap[key]) {
+      return -1;
     }
+
+    //list is empty
+    if (this.listSize === 0) {
+      this.listHead = nodeToAdd;
+      this.listTail = nodeToAdd;
+
+    //list is not empty, attaching to front  
+    } else {
+      this.listHead.prev = nodeToAdd;
+      nodeToAdd.next = this.listHead;
+      this.listHead = nodeToAdd;
+    }
+
+    this.listKeyMap[key] = nodeToAdd;
+    this.listSize++;
     
-    curr = curr.next;
-  }
+    return nodeToAdd;
+  };
+
+  //removing tail from list
+  DDList.prototype.popBack = function() {
+    //list is empty => do nothing
+    if (this.listSize === 0) {
+      return;
+    }
+
+    var tailKey = this.listTail.key;
+
+    //list contains one element - just removing it
+    if (this.listSize === 1) {
+      this.listHead = null;
+      this.listTail = null;
+
+    //list contains more than two elements  
+    } else {
+      //saving reference to tail
+      var oldTail = this.listTail;
+
+      //saving reference to new tail
+      var newTail = oldTail.prev;
+
+      newTail.next = null;
+      this.listTail = newTail;
+      oldTail.prev = null;
+    }
+
+    delete this.listKeyMap[tailKey];
+    this.listSize--;
+  };
+
+  //removing head from list
+  DDList.prototype.popFront = function() {
+    //if list is empty => do nothing
+    if (this.listSize === 0) {
+      return;
+    }
+
+    var headKey = this.listHead.key;
+
+    //list contains one element - just removing it
+    if (this.listSize === 1) {
+      this.listHead = null;
+      this.listTail = null;
+
+    //list contains more than two elements  
+    } else {
+      var oldHead = this.listHead;
+      var newHead = oldHead.next;
+
+      newHead.prev = null;
+      this.listHead = newHead;
+    }
+
+    delete this.listKeyMap[headKey];
+    this.listSize--;
+  };
+
+  DDList.prototype.removeAtKey = function(key) {
+    //if list does not have such key => error
+    if (!this.listKeyMap[key]) {
+      return -1;
+    }
+
+    var nodeToRemove = this.listKeyMap[key];
+    var nodeFrom = nodeToRemove.prev;
+    var nodeTo = nodeToRemove.next;
+
+    //list contains one element - just remove it
+    if (this.listSize === 1) {
+      this.listHead = null;
+      this.listTail = null;
+
+      delete this.listKeyMap[key];
+      this.listSize--;
+
+    //list contains more than two elements and need to remove tail   
+    } else if (this.listTail.key === key) {
+      this.popBack();
+
+    //list contains more than two elements and need to remove head   
+    } else if (this.listHead.key === key) {
+      this.popFront();
+
+    //list contains more than two elements and need to in the middle of list  
+    } else {
+      nodeFrom.next = nodeTo;
+      nodeTo.prev = nodeFrom;
+      nodeToRemove.next = null;
+      nodeToRemove.prev = null;
+
+      delete this.listKeyMap[key];
+      this.listSize--;
+    }
+  };
   
-  str += ' <--TAIL';
-  console.log(str);
-  return str;
-};
-    
-    this.list = new DLinkedList();
+  DDList.prototype.getKeysMap = function(){
+    return this.listKeyMap;
+  };
+
+  DDList.prototype.getListHead = function() {
+    return this.listHead;
+  };
+  
+  DDList.prototype.getListTail = function() {
+    return this.listTail;
+  };
+  
+  DDList.prototype.getListSize = function(){
+    return this.listSize;
+  };
+
+  this.cacheList = new DDList();
 };
 
 /** 
@@ -113,16 +176,25 @@ var LRUCache = function(capacity) {
  * @return {number}
  */
 LRUCache.prototype.get = function(key) {
-    //check if this is present in map
-    if (this.map[key]){
-        //remove from list
-        var node = this.map[key];
-        this.list.removeNode(node);
-        //and add onfront
-        this.list.addFront(key, node.val);
-    } else {
-        return -1;
-    }
+  
+  var cacheMap = this.cacheList.getKeysMap();
+  
+  //element present in list
+  if (cacheMap[key]) {
+    var val = cacheMap[key].val;
+    
+    //remove element from list
+    this.cacheList.removeAtKey(key);
+
+    //and push it to front
+    var nodeToAdd = this.cacheList.pushFront(key, val);
+
+    return val;
+
+  //no element in list => eror  
+  } else {
+    return -1;
+  }
 };
 
 /** 
@@ -131,52 +203,80 @@ LRUCache.prototype.get = function(key) {
  * @return {void}
  */
 LRUCache.prototype.put = function(key, value) {
-    //console.log('==put');
-    //if we have room for putting element
-    if  (this.list.getSize() < this.capacity){
-        //console.log('==put :: size < capacity');
-        var node = this.list.addFront(key, value);
-        this.map[key] = node;
-    } else {
-        //removing last
-        //console.log('==put :: no room');
-        var lastNode = this.list.getTail();
-        this.list.removeNode(lastNode);
-        delete this.map[lastNode.key]; 
-        var nodeToAdd = this.list.addFront(key, value);
-        this.map[key] = nodeToAdd;
+  var cacheMap = this.cacheList.getKeysMap();
+
+  //there is room for putting new element to list
+  if (this.cacheList.getListSize() < this.cacheCapacity) {
+
+    //removing element, if it has the same key as new one
+    if (cacheMap[key]){
+      this.cacheList.removeAtKey(key);
     }
+
+    //push new element in front of list
+    this.cacheList.pushFront(key, value);
+    
+  //no room to put new element  
+  } else {
+    //element is already presented in list
+    if (cacheMap[key]){
+      var nodeKey = key;
+
+    //there is no such element in list, taking last one  
+    } else {
+      var nodeKey = this.cacheList.getListTail().key;
+    }
+    
+    //removing element from list by key    
+    this.cacheList.removeAtKey(nodeKey);
+
+    //put it in front of list
+    this.cacheList.pushFront(key, value);
+  }
+
 };
 
-LRUCache.prototype.str = function(){
-  return this.list.getStringifiedData();
-};
-
+//example of usage
 var cache = new LRUCache(2);
+console.log('===put [2, 1]');
+cache.put(2, 1);
+cache.cacheList.printList();
 
-cache.put(1, 1);
-cache.str();
-
+console.log('===put [2, 2]');
 cache.put(2, 2);
-cache.str();
+cache.cacheList.printList();
 
-cache.get(1); 
-cache.str();
+console.log('===get [2]');
+cache.get(2);
+cache.cacheList.printList();
+//2
 
-cache.put(3, 3);    // evicts key 2
-cache.str();
+console.log('===put [1, 1]');
+cache.put(1, 1);
+cache.cacheList.printList();
 
-cache.get(2);       // returns -1 (not found)
-cache.str();
+console.log('===put [4, 1]');
+cache.put(4, 1);
+cache.cacheList.printList();
 
-cache.put(4, 4);    // evicts key 1
-cache.str();
+console.log('===get [2]');
+cache.get(2);
+cache.cacheList.printList();
+//-1
 
-cache.get(1);       // returns -1 (not found)
-cache.str();
 
-cache.get(3);       // returns 3
-cache.str();
-
-cache.get(4);       // returns 4
-cache.str();
+/**
+===put [2, 1]
+ [2,1] 
+===put [2, 2]
+ [2,2] 
+===get [2]
+ [2,2] 
+===put [1, 1]
+ [1,1]  <===>  [2,2] 
+===put [4, 1]
+========DEBUG :: nodeKey 2
+ [4,1]  <===>  [1,1] 
+===get [2]
+ [4,1]  <===>  [1,1] 
+**/
